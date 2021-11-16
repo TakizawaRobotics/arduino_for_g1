@@ -1,3 +1,17 @@
+/*======================================================================
+Project Name    : arduino_for_g1
+File Name       : takiroboG1.ino
+Encoding        : utf-8
+Creation Date   : c++
+author          : Hayato Tajiri
+update date     : 2021/11/16
+ 
+Copyright © <2021> TakizawaRoboticsLLC. All rights reserved.
+ 
+This source code or any portion thereof must not be  
+reproduced or used in any manner whatsoever.
+======================================================================*/
+
 #include <ros.h>
 #include <ros/time.h>
 #include <std_msgs/Empty.h>
