@@ -261,8 +261,8 @@ void getOdometry(void)
     odom_msg.pose.pose.orientation = odom_quat;
 
     /*速度情報を入れる
-    velocity = (left_velocity + right_velosity) / 2
-    ω = (right_velosity - left_velosity) / トレッド幅*/
+    velocity = (left_velocity + right_velocity) / 2
+    ω = (right_velocity - left_velocity) / トレッド幅*/
     LEFT_MOTOR_velocity =  LEFT_MOTOR.data.rpm *(360.0/15.0) * 0.2 * PI / 360.0;
     RIGHT_MOTOR_velocity = RIGHT_MOTOR.data.rpm *(360.0/15.0) * 0.2 * PI / 360.0;
     odom_msg.twist.twist.linear.x = (LEFT_MOTOR_velocity + RIGHT_MOTOR_velocity) / 2.0;
