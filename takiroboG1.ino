@@ -276,6 +276,7 @@ void getOdometry(void)
       ω = (right_velocity - left_velocity) / トレッド幅*/
     LEFT_MOTOR_velocity =  (LEFT_MOTOR.data.rpm / MOTOR_POLES) * WHEEL_SIZE * PI / 60.0;
     RIGHT_MOTOR_velocity = (RIGHT_MOTOR.data.rpm / MOTOR_POLES) * WHEEL_SIZE * PI / 60.0;
+
     odom_msg.twist.twist.linear.x = (LEFT_MOTOR_velocity + RIGHT_MOTOR_velocity) / 2.0;
     odom_msg.twist.twist.linear.y = 0;
     odom_msg.twist.twist.linear.z = 0;
