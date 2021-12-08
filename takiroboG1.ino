@@ -81,12 +81,8 @@ void setup()
   Serial2.begin(115200);//Left Motor Driver
   Serial3.begin(115200);//Right Motor Driver
 
-  while (!Serial2) {
-    ;
-  }
-  while (!Serial3) {
-    ;
-  }
+  while (!Serial2);
+  while (!Serial3);
 
   /** Define which ports to use as UART */
   LEFT_MOTOR.setSerialPort(&Serial2);
