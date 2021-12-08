@@ -62,7 +62,7 @@ ros::Publisher odomPublisher("g1/odometry", &odom_msg);
 /*ROS Subscriberのインスタンス*/
 /*トピック名:"g1/cmd_vel"*/
 ros::Subscriber<geometry_msgs::Twist> twistSubscriber("g1/cmd_vel", &callBackMotorControl);
-ros::Subscriber<std_msgs::Empty> resetSubscriber("g1/position_reset", &callBackResetFlag);
+ros::Subscriber<std_msgs::Empty> resetSubscriber("g1/Odom_reset", &callBackResetFlag);
 
 /////////////
 /*初期化設定*/
@@ -70,27 +70,19 @@ ros::Subscriber<std_msgs::Empty> resetSubscriber("g1/position_reset", &callBackR
 void setup()
 {
   /*ROSの初期化*/
-  nh.getHardware()->setBaud(115200);
+  nh.getHardware()->setBaud(921600);
   nh.initNode();
   odom_broadcaster.init(nh);
   nh.advertise(odomPublisher);
   nh.subscribe(twistSubscriber);
   nh.subscribe(resetSubscriber);
-  odom_tf.transform.rotation.w = 1.0;
-
-  /** Setup Serial port to enter commands */
-  Serial.begin(9600);
 
   /** Setup UART port (Serial1 on Atmega32u4) */
   Serial2.begin(115200);//Left Motor Driver
   Serial3.begin(115200);//Right Motor Driver
 
-  while (!Serial2) {
-    ;
-  }
-  while (!Serial3) {
-    ;
-  }
+  while (!Serial2);
+  while (!Serial3);
 
   /** Define which ports to use as UART */
   LEFT_MOTOR.setSerialPort(&Serial2);
@@ -112,23 +104,27 @@ void loop()
 ///////////////////////////////////////////////////////////////////////////
 void callBackMotorControl(const geometry_msgs::Twist& twist)
 {
-  /*Twist 情報の取得*/\
-  char *buf = "";
+  /*Twist 情報の取得*/
+  char buf1[100] = "";
+  char buf2[100] = "";
+  char log_msg[100] ="";
   const float linear_x = twist.linear.x;//前後の移動方向
   const float angle_z = twist.angular.z;//z軸を中心としたときの回転、つまり旋回
 
   /*モーター速度の計算*/
   float vel_left_speed =  (angle_z * BASE_WIDTH - 2 * linear_x) / (-2.0);
   float vel_right_speed = (angle_z * BASE_WIDTH + 2 * linear_x) / 2.0;
-  vel_left_speed /= (WHEEL_SIZE * 2.0 * PI);
-  vel_right_speed /= (WHEEL_SIZE * 2.0 * PI);
+  /*vel_left_speed /= (WHEEL_SIZE * 2 * PI);
+  vel_right_speed /= (WHEEL_SIZE * 2 * PI);*/
 
   /*左右のモーターのスピードをセットする*/
   motorDriverSetSpeed(vel_left_speed, vel_right_speed);
 
   /*受信とモーターのスピートをセット出来たら成功*/
-  sprintf(buf, "set twist:( %f, %f )", vel_left_speed, vel_right_speed);
-  nh.loginfo(buf);
+  dtostrf(vel_left_speed,6,2,buf1);
+  dtostrf(vel_right_speed,6,2,buf2);
+  sprintf(log_msg, "set twist:( %s, %s )\r\n", buf1, buf2);
+  nh.loginfo(log_msg);
 }
 
 ///////////////////////////////////////
@@ -223,6 +219,14 @@ void getOdometry(void)
     RIGHT_MOTOR_odom = ((float)(RIGHT_MOTOR.data.tachometer - RIGHT_MOTOR_tacho_old) * MOTOR_STEPS) * WHEEL_SIZE * PI / 360.0;
     distance = (LEFT_MOTOR_odom + RIGHT_MOTOR_odom) / 2.0;
     theta = (RIGHT_MOTOR_odom - LEFT_MOTOR_odom) / BASE_WIDTH;
+    char buf1[100] = "";
+    char buf2[100] = "";
+    char log_msg[100] = "";
+    dtostrf(distance,6,2,buf1);
+    dtostrf((theta*180/PI),6,2,buf2);
+    sprintf(log_msg, "dist: %s, theta: %s \r\n", buf1, buf2);
+    nh.loginfo(log_msg);
+
 
     //////////////////////////////
     /*直交座標の位置の計算
