@@ -104,10 +104,15 @@ void loop()
 ///////////////////////////////////////////////////////////////////////////
 void callBackMotorControl(const geometry_msgs::Twist& twist)
 {
+<<<<<<< HEAD:takiroboG1/takiroboG1.ino
   /*Twist 情報の取得*/
   char buf1[100] = "";
   char buf2[100] = "";
   char log_msg[100] ="";
+=======
+  /*Twist 情報の取得*/\
+  char buf[100] = "";
+>>>>>>> 4b1ecda23ca4c48b791fc051b681033e01759cb2:takiroboG1.ino
   const float linear_x = twist.linear.x;//前後の移動方向
   const float angle_z = twist.angular.z;//z軸を中心としたときの回転、つまり旋回
 
