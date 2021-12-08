@@ -110,7 +110,7 @@ void loop()
 void callBackMotorControl(const geometry_msgs::Twist& twist)
 {
   /*Twist 情報の取得*/\
-  char *buf = "";
+  char buf[100] = "";
   const float linear_x = twist.linear.x;//前後の移動方向
   const float angle_z = twist.angular.z;//z軸を中心としたときの回転、つまり旋回
 
