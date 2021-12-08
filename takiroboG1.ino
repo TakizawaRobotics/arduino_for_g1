@@ -78,9 +78,6 @@ void setup()
   nh.subscribe(resetSubscriber);
   odom_tf.transform.rotation.w = 1.0;
 
-  /** Setup Serial port to enter commands */
-  Serial.begin(9600);
-
   /** Setup UART port (Serial1 on Atmega32u4) */
   Serial2.begin(115200);//Left Motor Driver
   Serial3.begin(115200);//Right Motor Driver
